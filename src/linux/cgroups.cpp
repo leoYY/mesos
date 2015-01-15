@@ -413,6 +413,11 @@ static Try<Nothing> write(
   }
 
   file.close();
+  // for kernel2.6.32 cgroup.procs not writeable, it will not close suc， or throw exceptions
+  if ((file.rdstat() & std::ofstream::failbit) != 0) {
+    ErrnoError error;
+    return error;
+  }
   return Nothing();
 }
 
